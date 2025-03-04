@@ -42,12 +42,26 @@ namespace DungeonExplorer
                     case "3":
                         Console.WriteLine("What item would you like to pick up?");
                         string itemToPickup = Console.ReadLine();
-                        player.PickUpItem(itemToPickup);
+                        if (string.IsNullOrWhiteSpace(itemToPickup))
+                        {
+                            Console.WriteLine("Invalid item");
+                        }
+                        else
+                        {
+                            player.PickUpItem(itemToPickup);
+                        }
                         break;
                     case "4":
                         Console.WriteLine("What item would you like to drop?");
                         string itemToDrop = Console.ReadLine();
-                        player.DropItem(itemToDrop);
+                        if (string.IsNullOrWhiteSpace(itemToDrop))
+                        {
+                            Console.WriteLine("Invalid item");
+                        }
+                        else
+                        {
+                            player.DropItem(itemToDrop);
+                        }
                         break;
                     case "5":
                         playing = false;
