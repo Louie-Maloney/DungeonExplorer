@@ -6,7 +6,7 @@ namespace DungeonExplorer
     public class Room
     {
         private string description;
-        private string item;
+        private List<string> items = new List<string> { "Torch", "Sword", "Axe" };
 
         public Room(string description)
         {
@@ -20,7 +20,11 @@ namespace DungeonExplorer
 
         public string GetItem()
         {
-            return item;
+            Random random = new Random();
+            int index = random.Next(items.Count);
+            string randomItem = items[index];
+
+            return randomItem;
         }
     }
 }

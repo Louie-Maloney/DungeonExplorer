@@ -18,6 +18,8 @@ namespace DungeonExplorer
         public void Start()
         {
             // Change the playing logic into true and populate the while loop
+            
+            string roomItem = currentRoom.GetItem();
             bool playing = true;
             while (playing)
             {
@@ -35,9 +37,10 @@ namespace DungeonExplorer
                 {
                     case "1":
                         Console.WriteLine(currentRoom.GetDescription());
+                        Console.WriteLine($"There is a {roomItem} in the room.");
                         break;
                     case "2":
-                        Console.WriteLine(player.InventoryContents());
+                        player.ShowPlayerStats();
                         break;
                     case "3":
                         Console.WriteLine("What item would you like to pick up?");
@@ -45,6 +48,10 @@ namespace DungeonExplorer
                         if (string.IsNullOrWhiteSpace(itemToPickup))
                         {
                             Console.WriteLine("Invalid item");
+                        }
+                        else if (itemToPickup.ToLower() != roomItem.ToLower())
+                        {
+                            Console.WriteLine("Item not in room");
                         }
                         else
                         {

@@ -39,10 +39,17 @@ namespace DungeonExplorer
                 Console.WriteLine($"{Name} does not have {item}");
             }
         }
-
+        
         public string InventoryContents()
         {
             return string.Join(", ", inventory);
+        }
+        
+        public void ShowPlayerStats()
+        {
+            Console.WriteLine($"Player: {Name}");
+            Console.WriteLine($"Health: {Health}");
+            Console.WriteLine($"Inventory: {InventoryContents()}");
         }
     }
 }
