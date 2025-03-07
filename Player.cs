@@ -14,6 +14,7 @@ namespace DungeonExplorer
             Name = name;
             Health = health;
         }
+        
         public void PickUpItem(string item)
         {
             if (string.IsNullOrEmpty(item))
@@ -42,7 +43,7 @@ namespace DungeonExplorer
         
         public string InventoryContents()
         {
-            return string.Join(", ", inventory);
+            return inventory.Count > 0 ? string.Join(", ", inventory) : "Inventory is empty.";
         }
         
         public void ShowPlayerStats()
@@ -50,6 +51,15 @@ namespace DungeonExplorer
             Console.WriteLine($"Player: {Name}");
             Console.WriteLine($"Health: {Health}");
             Console.WriteLine($"Inventory: {InventoryContents()}");
+        }
+
+        public void TakeItemFromRoom(Room room, string item)
+        {
+            string retrievedItem = room.TakeItem(item);
+            if (retrievedItem != null)
+            {
+                PickUpItem(retrievedItem);
+            }
         }
     }
 }
