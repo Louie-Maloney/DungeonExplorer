@@ -4,25 +4,26 @@ using System.Media;
 
 namespace DungeonExplorer
 {
+    // Game class which is used to represent the game
     internal class Game
     {
+        // Properties for the player and the current room
         private Player player;
         private Room currentRoom;
 
         public Game(string playerName)
         {
-            // Initialize the game with one room and one player
+            // Creates a new player and room when the game is started
             player = new Player(playerName, 100);
             currentRoom = new Room("You are in a dark room.", new List<string> { "torch", "sword", "axe" });
 
         }
+        // Method that starts the main game loop
         public void Start()
         {
-            // Change the playing logic into true and populate the while loop
             bool playing = true;
             while (playing)
             {
-                // Code your playing logic here
                 Console.WriteLine("What would you like to do?: ");
                 Console.WriteLine("1. View room description");
                 Console.WriteLine("2. View player status");
