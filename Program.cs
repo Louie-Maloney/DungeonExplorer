@@ -11,7 +11,12 @@ namespace DungeonExplorer
         // Main method used to start the game
         static void Main(string[] args)
         {
-            
+            // Run tests before starting the game
+            Console.WriteLine("Running tests...");
+            Testing.Test();
+            Console.WriteLine("Tests completed.");
+
+            Console.WriteLine("Welcome to Dungeon Explorer!");
             Console.WriteLine("Enter player name: ");
             string playerName = Console.ReadLine();
 

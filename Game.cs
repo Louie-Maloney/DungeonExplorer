@@ -10,12 +10,14 @@ namespace DungeonExplorer
         // Properties for the player and the current room
         private Player player;
         private Room currentRoom;
+        private Enemy enemy;
 
         public Game(string playerName)
         {
             // Creates a new player and room when the game is started
             player = new Player(playerName, 100);
             currentRoom = new Room("You are in a dark room.", new List<string> { "torch", "sword", "axe" });
+            enemy = new Enemy("Goblin", 50);
 
         }
         // Method that starts the main game loop
@@ -29,7 +31,9 @@ namespace DungeonExplorer
                 Console.WriteLine("2. View player status");
                 Console.WriteLine("3. Pick up item");
                 Console.WriteLine("4. Drop item");
-                Console.WriteLine("5. Exit game");
+                Console.WriteLine("5. Attack enemy");
+                Console.WriteLine("6. View enemy status");
+                Console.WriteLine("7. Exit game");
 
                 string choice = Console.ReadLine()?.Trim(); 
 
@@ -73,8 +77,18 @@ namespace DungeonExplorer
                             Console.WriteLine("Item not found in inventory");
                         }
                         break;
-                    
+
                     case "5":
+                        Console.WriteLine("You attack the enemy!");
+                        enemy.TakeDamage(20);
+                        break;
+
+                    case "6":
+                        enemy.ShowEnemyStats();
+                        break;
+
+
+                    case "7":
                         playing = false;
                         break;
                    
