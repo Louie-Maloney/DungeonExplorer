@@ -1,58 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DungeonExplorer
 {
-    // Player class which is used to represent the player in the game
-    public class Player
+    public class Player : Creature, IDamageable
     {
-        // Properties for the player's name and health
-        public string Name { get; private set; }
-        public int Health { get; private set; }
-        private List<string> inventory = new List<string>();
+        public Inventory Inventory { get; private set; }
+        public Statistics PlayerStatistics { get; private set; }
 
         // Constructor to create a new player
-        public Player(string name, int health) 
+        public Player(string name, int health)
         {
             Name = name;
             Health = health;
+            Inventory = new Inventory();
+            PlayerStatistics = new Statistics();
         }
 
-        // Method to pick up an item and add it to the player's inventory
-        public void PickUpItem(string item)
+        // Override the Attack method from Creature class
+        public override void Attack()
         {
-            if (string.IsNullOrEmpty(item))
-            {
-                Console.WriteLine("Invalid item");
-            }
-            else
-            {
-                inventory.Add(item);
-                Console.WriteLine($"{Name} picked up {item}");
-            }
+            Console.WriteLine($"{Name} attacks with a mighty blow!");
+       
         }
 
-        // Method to remove an item from the player's inventory
-        public void DropItem(string item)
-        {
-            if (inventory.Contains(item))
-            {
-                inventory.Remove(item);
-                Console.WriteLine($"{Name} dropped {item}");
-            }
-            else
-            {
-                Console.WriteLine($"{Name} does not have {item}");
-            }
-        }
-
-        // Method to show the contents of the player's inventory
         public string InventoryContents()
         {
-            return inventory.Count > 0 ? string.Join(", ", inventory) : "Inventory is empty.";
+            return Inventory.GetItems().Count > 0
+                ? string.Join(", ", Inventory.GetItems().Select(i => i.Name))
+                : "Inventory is empty.";
         }
 
-        // Method to show the player's stats
         public void ShowPlayerStats()
         {
             Console.WriteLine($"Player: {Name}");
@@ -60,14 +39,36 @@ namespace DungeonExplorer
             Console.WriteLine($"Inventory: {InventoryContents()}");
         }
 
-        // Method to remove an item from a room when the player adds the item to their inventory
-        public void TakeItemFromRoom(Room room, string item)
+        public void UseItem(string itemName, Room currentRoom, Player player)
         {
-            string retrievedItem = room.TakeItem(item);
-            if (retrievedItem != null)
+            Item item = Inventory.GetItems()
+                .FirstOrDefault(i => i.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase));
+
+            if (item != null)
             {
-                PickUpItem(retrievedItem);
+                if (item is Weapon weapon)
+                {
+                    weapon.Use(currentRoom, player);
+                }
+                else if (item is Potion potion)
+                {
+                    potion.Use(player);
+                }
+                else
+                {
+                    item.Use(player);
+                }
             }
+            else
+            {
+                Console.WriteLine($"Item {itemName} not found in inventory.");
+            }
+        }
+
+        public void Heal(int amount)
+        {
+            Health += amount;
+            PlayerStatistics.AddHealthRestored(amount);
         }
     }
 }

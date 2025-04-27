@@ -12,9 +12,9 @@ namespace DungeonExplorer
         static void Main(string[] args)
         {
             // Run tests before starting the game
-            Console.WriteLine("Running tests...");
-            Testing.Test();
-            Console.WriteLine("Tests completed.");
+            //Console.WriteLine("Running tests...");
+            //Testing.Test();
+            //Console.WriteLine("Tests completed.");
 
             Console.WriteLine("Welcome to Dungeon Explorer!");
             Console.WriteLine("Enter player name: ");

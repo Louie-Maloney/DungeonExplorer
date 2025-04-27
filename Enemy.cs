@@ -6,33 +6,40 @@ using System.Threading.Tasks;
 
 namespace DungeonExplorer
 {
-    internal class Enemy
+    public class Enemy : Creature
     {
-        public string Name { get; private set; }
-        public int Health { get; private set; }
-    
+        public Room CurrentRoom { get; private set; }
+        public int Damage { get; private set; }
 
-
-    public Enemy(string name, int health)
+        public Enemy(string name, int health, Room room, int damage)
         {
             Name = name;
             Health = health;
+            CurrentRoom = room;
+            Damage = damage;
         }
 
-        public void TakeDamage(int damage)
+        public override void Attack()
         {
-            Health -= damage;
-            Console.WriteLine($"{Name} took {damage} damage.");
-            if (Health <= 0)
-            {
-                Console.WriteLine($"{Name} has been defeated.");
-            }
+            Console.WriteLine($"{Name} attacks and deals {Damage} damage!");
         }
 
         public void ShowEnemyStats()
         {
             Console.WriteLine($"Enemy: {Name}");
             Console.WriteLine($"Health: {Health}");
+            Console.WriteLine($"Damage: {Damage}");
+        }
+
+        // Optionally override TakeDamage to add extra behavior
+        public new void TakeDamage(int amount)
+        {
+            base.TakeDamage(amount);
+
+            if (Health <= 0)
+            {
+                CurrentRoom.RemoveEnemy(this);
+            }
         }
     }
 }
