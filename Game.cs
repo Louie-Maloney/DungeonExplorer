@@ -89,7 +89,8 @@ namespace DungeonExplorer
                 Console.WriteLine("6. Show map");
                 Console.WriteLine("7. Show enemy stats");
                 Console.WriteLine("8. Show player statistics");
-                Console.WriteLine("9. Exit game");
+                Console.WriteLine("9. Drop an item");
+                Console.WriteLine("10. Exit game");
 
                 string choice = Console.ReadLine();
                 switch (choice)
@@ -137,6 +138,11 @@ namespace DungeonExplorer
                         statistics.DisplayStatistics();
                         break;
                     case "9":
+                        Console.WriteLine("Enter the name of the item to drop: ");
+                        string itemToDrop = Console.ReadLine();
+                        player.DiscardItem(itemToDrop);
+                        break;
+                    case "10":
                         Console.WriteLine("Exiting game...");
                         Environment.Exit(0);
                         break;
@@ -153,7 +159,12 @@ namespace DungeonExplorer
             Item item = currentRoom.TakeItem(itemName);
             if (item != null)
             {
-                player.Inventory.AddItem(item);
+                bool added = player.Inventory.AddItem(item);
+                if (! added)
+                {
+                    Console.WriteLine("Inventory is full. Cannot add item.");
+                    currentRoom.AddItem(item); 
+                }
             }
         }
 

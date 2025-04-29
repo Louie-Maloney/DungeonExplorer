@@ -22,7 +22,7 @@ namespace DungeonExplorer
         public override void Attack()
         {
             Console.WriteLine($"{Name} attacks with a mighty blow!");
-       
+
         }
 
         public string InventoryContents()
@@ -69,6 +69,19 @@ namespace DungeonExplorer
         {
             Health += amount;
             PlayerStatistics.AddHealthRestored(amount);
+        }
+
+        public void DiscardItem(string itemName)
+        {
+            Item item = Inventory.GetItems().FirstOrDefault(i => i.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase));
+            if (item != null)
+            {
+                Inventory.RemoveItem(item);
+            }
+            else
+            {
+                Console.WriteLine($"Item {itemName} not found in inventory.");
+            }
         }
     }
 }

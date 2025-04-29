@@ -10,20 +10,33 @@ namespace DungeonExplorer
     {
         // List to store items in the inventory
         private List<Item> items;
+        private int MaxInventorySize;
 
         // Constructor to initialize the inventory
-        public Inventory()
+        public Inventory(int inventorySize = 3)
         {
             items = new List<Item>();
+            MaxInventorySize = inventorySize;
         }
 
         // Method to add an item to the inventory
-        public void AddItem(Item item)
+        public bool AddItem(Item item)
         {
+            if (items.Count >= MaxInventorySize)
+            {
+                Console.WriteLine("Inventory is full. Cannot add more items.");
+                return false;
+            }
             if (item != null)
             {
                 items.Add(item);
                 Console.WriteLine($"{item.Name} added to inventory.");
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("Item cannot be null.");
+                return false;
             }
         }
 
@@ -51,23 +64,6 @@ namespace DungeonExplorer
         public bool ContainsItem(string itemName)
         {
             return items.Any(i => i.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase));
-        }
-
-        // Method to show all the items in the inventory (as a string)
-        public void ShowInventory()
-        {
-            if (items.Count > 0)
-            {
-                Console.WriteLine("Inventory contains:");
-                foreach (var item in items)
-                {
-                    Console.WriteLine($"- {item.Name}: {item.Description}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Inventory is empty.");
-            }
         }
     }
 }
