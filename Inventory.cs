@@ -60,6 +60,18 @@ namespace DungeonExplorer
             return items;
         }
 
+        // Method to return the strongest weapon in the inventory
+        public Weapon GetStrongestWeapon()
+        {
+            return items.OfType<Weapon>().OrderByDescending(w => w.weaponDamage).FirstOrDefault();
+        }
+
+        // Method to return all potions in the inventory
+        public List<Potion> GetAllPotions()
+        {
+            return items.OfType<Potion>().ToList();
+        }
+
         // Method to check if the inventory contains a specific item by name
         public bool ContainsItem(string itemName)
         {

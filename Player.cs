@@ -25,6 +25,7 @@ namespace DungeonExplorer
 
         }
 
+        // Method to return the player's inventory contents
         public string InventoryContents()
         {
             return Inventory.GetItems().Count > 0
@@ -32,6 +33,7 @@ namespace DungeonExplorer
                 : "Inventory is empty.";
         }
 
+        // Method to return the players stats
         public void ShowPlayerStats()
         {
             Console.WriteLine($"Player: {Name}");
@@ -39,6 +41,7 @@ namespace DungeonExplorer
             Console.WriteLine($"Inventory: {InventoryContents()}");
         }
 
+        // Method to allow the player to use an item
         public void UseItem(string itemName, Room currentRoom, Player player)
         {
             Item item = Inventory.GetItems()
@@ -65,12 +68,14 @@ namespace DungeonExplorer
             }
         }
 
+        // Method to increase the player's health when they choose to heal
         public void Heal(int amount)
         {
             Health += amount;
             PlayerStatistics.AddHealthRestored(amount);
         }
 
+        // Method to remove an item from the player's inventory
         public void DiscardItem(string itemName)
         {
             Item item = Inventory.GetItems().FirstOrDefault(i => i.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase));

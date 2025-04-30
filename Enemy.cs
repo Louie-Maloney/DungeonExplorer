@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace DungeonExplorer
 {
+    // This class represents an enemy in the game, inheriting from Creature.
     public class Enemy : Creature
     {
+        // Properties for the enemy's name, health, current room, and damage
         public Room CurrentRoom { get; private set; }
         public int Damage { get; private set; }
 
+        // Constructor to initialize the enemy with a name, health, room, and damage
         public Enemy(string name, int health, Room room, int damage)
         {
             Name = name;
@@ -19,11 +22,13 @@ namespace DungeonExplorer
             Damage = damage;
         }
 
+        // Method to attack the player
         public override void Attack()
         {
             Console.WriteLine($"{Name} attacks and deals {Damage} damage!");
         }
 
+        // Method to display the enemy's stats
         public void ShowEnemyStats()
         {
             Console.WriteLine($"Enemy: {Name}");

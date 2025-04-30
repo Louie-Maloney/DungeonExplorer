@@ -23,8 +23,6 @@ namespace DungeonExplorer
 
             statistics = new Statistics();
 
-
-
             // Create some items
             Weapon sword = new Weapon("Sword", "Inflicts 20 damage", 20);
             Weapon axe = new Weapon("Axe", "Inflicts 5 damage.", 5);
@@ -36,12 +34,14 @@ namespace DungeonExplorer
             Room garden = new Room("A bright and peaceful garden.");
             Room cave = new Room("A dark and damp cave.");
             Room forest = new Room("A dense and mysterious forest.");
+            Room castle = new Room("An old castle.");
 
             // Create some enemies
             Enemy goblin = new Enemy("Goblin", 30, dungeon, 5);
             Enemy troll = new Enemy("Troll", 50, garden, 10);
             Enemy dragon = new Enemy("Dragon", 100, cave, 50);
             Enemy skeleton = new Enemy("Skeleton", 20, forest, 5);
+            Enemy ghost = new Enemy("Ghost", 25, castle, 20);
 
             // Add items to the rooms
             dungeon.AddItem(sword);
@@ -51,15 +51,18 @@ namespace DungeonExplorer
 
             // Add enemies to the rooms
             dungeon.AddEnemy(goblin);
-            dungeon.AddEnemy(dragon);
+            cave.AddEnemy(dragon);
             garden.AddEnemy(troll);
             forest.AddEnemy(skeleton);
+            castle.AddEnemy(ghost);
 
             // Add rooms to the map
             map.AddRoom("Dungeon", dungeon);
             map.AddRoom("Garden", garden);
             map.AddRoom("Cave", cave);
             map.AddRoom("Forest", forest);
+            map.AddRoom("Castle", castle);
+           
 
             // Set the initial room
             currentRoom = dungeon;
@@ -90,7 +93,9 @@ namespace DungeonExplorer
                 Console.WriteLine("7. Show enemy stats");
                 Console.WriteLine("8. Show player statistics");
                 Console.WriteLine("9. Drop an item");
-                Console.WriteLine("10. Exit game");
+                Console.WriteLine("10. Show strongest weapon");
+                Console.WriteLine("11. Show all healing items in inventory");
+                Console.WriteLine("12. Exit game");
 
                 string choice = Console.ReadLine();
                 switch (choice)
@@ -143,6 +148,12 @@ namespace DungeonExplorer
                         player.DiscardItem(itemToDrop);
                         break;
                     case "10":
+                        ShowStrongestWeapon();
+                        break;
+                    case "11":
+                        ShowAllPotions();
+                        break;
+                    case "12":
                         Console.WriteLine("Exiting game...");
                         Environment.Exit(0);
                         break;
@@ -182,6 +193,39 @@ namespace DungeonExplorer
             }
         }
 
+        // Method to show the strongest weapon in the player's inventory
+        private void ShowStrongestWeapon()
+        {
+            Weapon strongestWeapon = player.Inventory.GetStrongestWeapon();
+            if (strongestWeapon != null)
+            {
+                Console.WriteLine($"The strongest weapon in your inventory is: {strongestWeapon.Name} with damage {strongestWeapon.weaponDamage}");
+            }
+            else
+            {
+                Console.WriteLine("No weapons found in your inventory.");
+            }
+        }
+
+        // Method to show all healing items in the player's inventory
+        private void ShowAllPotions()
+        {
+            var potions = player.Inventory.GetAllPotions();
+            if (potions.Count > 0)
+            {
+                Console.WriteLine("Healing items in your inventory:");
+                foreach (var potion in potions)
+                {
+                    Console.WriteLine($"{potion.Name} - Restores {potion.HealingAmount} health.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No healing items found in your inventory.");
+            }
+        }
+
+        // Method to restart the game 
         private void RestartGame()
         {
             Console.WriteLine("Do you want to restart the game? (yes/no)");

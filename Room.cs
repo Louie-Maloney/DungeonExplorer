@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace DungeonExplorer
 {
+    // This class represents a room in the dungeon.
     public class Room
     {
         // Properties for the room's description, items and enemies

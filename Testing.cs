@@ -4,8 +4,10 @@ using System.Diagnostics;
 
 namespace DungeonExplorer
 {
+    // This class contains all the tests for the game
     internal class Testing
     {
+        // This method runs all the tests
         public static void RunTests()
         {
             TestDamage();
@@ -14,6 +16,7 @@ namespace DungeonExplorer
             TestItemCollection();
         }
 
+        // This method tests the damage dealt by a weapon
         public static void TestDamage() 
         {
             Player player = new Player("Test Player", 100);
@@ -30,6 +33,7 @@ namespace DungeonExplorer
 
         }
 
+        // This method tests the healing functionality of a potion
         private static void TestHealing()
         {
             Player player = new Player("Test Player", 100);
@@ -45,6 +49,7 @@ namespace DungeonExplorer
             Debug.Assert(player.PlayerStatistics.TotalHealthRestored == initialHealthRestored + 20, "Player's total health restored stat should update by 20");
         }
 
+        // This method tests the interaction between a room and an enemy
         private static void TestRoomEnemyInteraction()
         {
             Room room = new Room("Test Room");
@@ -55,6 +60,7 @@ namespace DungeonExplorer
             Debug.Assert(room.GetFirstEnemy() == null, "Room should not contain any enemies after removal");
         }
 
+        // This method tests the item collection functionality
         private static void TestItemCollection()
         {
             Player player = new Player("Test Player", 100);

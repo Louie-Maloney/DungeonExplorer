@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace DungeonExplorer
 {
+    // This class represents the game map, which contains rooms and their connections.
     public class GameMap
     {
         // Dictionary to store rooms by name for quick access
