@@ -1,101 +1,244 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Media;
+using System.Xml.Serialization;
 
 namespace DungeonExplorer
 {
     // Game class which is used to represent the game
     internal class Game
     {
-        // Properties for the player and the current room
+        // Properties for the game
         private Player player;
+        private GameMap map;
         private Room currentRoom;
-        private Enemy enemy;
+        private Statistics statistics;
 
+        // Constructor to initialize the game
         public Game(string playerName)
         {
-            // Creates a new player and room when the game is started
-            player = new Player(playerName, 100);
-            currentRoom = new Room("You are in a dark room.", new List<string> { "torch", "sword", "axe" });
-            enemy = new Enemy("Goblin", 50);
+            // Initialize player, map, and rooms
+            player = new Player(playerName, 100);  // Default health is 100
+            map = new GameMap();
 
+            statistics = new Statistics();
+
+            // Create some items
+            Weapon sword = new Weapon("Sword", "Inflicts 20 damage", 20);
+            Weapon axe = new Weapon("Axe", "Inflicts 5 damage.", 5);
+            Potion potion = new Potion("Potion", "Increases health by 10.", 10);
+            Weapon shield = new Weapon("Shield", "Increases health by 10.", 5);
+
+            // Create rooms
+            Room dungeon = new Room("A dark and eerie dungeon room.");
+            Room garden = new Room("A bright and peaceful garden.");
+            Room cave = new Room("A dark and damp cave.");
+            Room forest = new Room("A dense and mysterious forest.");
+            Room castle = new Room("An old castle.");
+
+            // Create some enemies
+            Enemy goblin = new Enemy("Goblin", 30, dungeon, 5);
+            Enemy troll = new Enemy("Troll", 50, garden, 10);
+            Enemy dragon = new Enemy("Dragon", 100, cave, 50);
+            Enemy skeleton = new Enemy("Skeleton", 20, forest, 5);
+            Enemy ghost = new Enemy("Ghost", 25, castle, 20);
+
+            // Add items to the rooms
+            dungeon.AddItem(sword);
+            dungeon.AddItem(axe);
+            garden.AddItem(potion);
+            forest.AddItem(shield);
+
+            // Add enemies to the rooms
+            dungeon.AddEnemy(goblin);
+            cave.AddEnemy(dragon);
+            garden.AddEnemy(troll);
+            forest.AddEnemy(skeleton);
+            castle.AddEnemy(ghost);
+
+            // Add rooms to the map
+            map.AddRoom("Dungeon", dungeon);
+            map.AddRoom("Garden", garden);
+            map.AddRoom("Cave", cave);
+            map.AddRoom("Forest", forest);
+            map.AddRoom("Castle", castle);
+           
+
+            // Set the initial room
+            currentRoom = dungeon;
         }
-        // Method that starts the main game loop
+
+        // Method to start the game
         public void Start()
         {
-            bool playing = true;
-            while (playing)
+            Console.WriteLine($"Welcome to the game, {player.Name}!");
+
+            while (true)
             {
-                Console.WriteLine("What would you like to do?: ");
-                Console.WriteLine("1. View room description");
-                Console.WriteLine("2. View player status");
-                Console.WriteLine("3. Pick up item");
-                Console.WriteLine("4. Drop item");
-                Console.WriteLine("5. Attack enemy");
-                Console.WriteLine("6. View enemy status");
-                Console.WriteLine("7. Exit game");
+                if (player.Health <= 0)
+                {
+                    Console.WriteLine("You have died. Game over.");
+                    Console.WriteLine("Here are your stats: ");
+                    statistics.DisplayStatistics();
+                    RestartGame();
+                }
 
-                string choice = Console.ReadLine()?.Trim(); 
+                Console.WriteLine("Choose an action: ");
+                Console.WriteLine("1. Show player status");
+                Console.WriteLine("2. Show current room description");
+                Console.WriteLine("3. Take item from room");
+                Console.WriteLine("4. Go to another room");
+                Console.WriteLine("5. Use Item");
+                Console.WriteLine("6. Show map");
+                Console.WriteLine("7. Show enemy stats");
+                Console.WriteLine("8. Show player statistics");
+                Console.WriteLine("9. Drop an item");
+                Console.WriteLine("10. Show strongest weapon");
+                Console.WriteLine("11. Show all healing items in inventory");
+                Console.WriteLine("12. Exit game");
 
+                string choice = Console.ReadLine();
                 switch (choice)
                 {
                     case "1":
-                        currentRoom.GetRoomDescription();
-                        break;
-                    
-                    case "2":
                         player.ShowPlayerStats();
                         break;
-                    
+                    case "2":
+                        currentRoom.GetRoomDescription();
+                        break;
                     case "3":
-                        Console.WriteLine("What item would you like to pick up?");
-                        string itemToPickup = Console.ReadLine()?.Trim().ToLower();
-                        if (string.IsNullOrWhiteSpace(itemToPickup))
-                        {
-                            Console.WriteLine("Invalid item");
-                        }
-                        else
-                        {
-                            player.TakeItemFromRoom(currentRoom, itemToPickup);
-                        }
+                        Console.WriteLine("Enter the name of the item to take: ");
+                        string itemName = Console.ReadLine();
+                        TakeItemFromRoom(itemName);
+                        statistics.AddItemCollected();
                         break;
-                    
                     case "4":
-                        Console.WriteLine("What item would you like to drop?");
-                        string itemToDrop = Console.ReadLine()?.Trim().ToLower();
-                        if (string.IsNullOrWhiteSpace(itemToDrop))
+                        map.ShowMap();
+                        Console.WriteLine("Enter the name of the room to go to: ");
+                        string roomName = Console.ReadLine();
+                        GoToRoom(roomName.ToLower());
+                        break;
+                    case "5":
+                        Console.WriteLine("Enter the name of the item to use: ");
+                        string itemToUse = Console.ReadLine();
+                        player.UseItem(itemToUse, currentRoom, player);
+                        break;
+                    case "6":
+                        map.ShowMap();
+                        break;
+                    case "7":
+                        Console.WriteLine("Enter the name of the enemy to show stats: ");
+                        string enemyName = Console.ReadLine();
+                        Enemy enemy = currentRoom.GetEnemy(enemyName);
+                        if (enemy != null)
                         {
-                            Console.WriteLine("Invalid item");
-                        }
-                        else if (player.InventoryContents().Contains(itemToDrop))
-                        {
-                            player.DropItem(itemToDrop);
-                            currentRoom.AddItem(itemToDrop);
+                            enemy.ShowEnemyStats();
                         }
                         else
                         {
-                            Console.WriteLine("Item not found in inventory");
+                            Console.WriteLine($"Enemy {enemyName} not found in the room.");
                         }
                         break;
-
-                    case "5":
-                        Console.WriteLine("You attack the enemy!");
-                        enemy.TakeDamage(20);
+                    case "8":
+                        statistics.DisplayStatistics();
                         break;
-
-                    case "6":
-                        enemy.ShowEnemyStats();
+                    case "9":
+                        Console.WriteLine("Enter the name of the item to drop: ");
+                        string itemToDrop = Console.ReadLine();
+                        player.DiscardItem(itemToDrop);
                         break;
-
-
-                    case "7":
-                        playing = false;
+                    case "10":
+                        ShowStrongestWeapon();
                         break;
-                   
+                    case "11":
+                        ShowAllPotions();
+                        break;
+                    case "12":
+                        Console.WriteLine("Exiting game...");
+                        Environment.Exit(0);
+                        break;
                     default:
-                        Console.WriteLine("Invalid choice");
+                        Console.WriteLine("Invalid choice. Pick from numbers 1-7. Please try again.");
                         break;
                 }
+            }
+        }
+
+        // Method to take an item from the current room
+        private void TakeItemFromRoom(string itemName)
+        {
+            Item item = currentRoom.TakeItem(itemName);
+            if (item != null)
+            {
+                bool added = player.Inventory.AddItem(item);
+                if (! added)
+                {
+                    Console.WriteLine("Inventory is full. Cannot add item.");
+                    currentRoom.AddItem(item); 
+                }
+            }
+        }
+
+        // Method to move the player to another room
+        private void GoToRoom(string roomName)
+        {
+            if (map.RoomExists(roomName))
+            {
+                currentRoom = map.GetRoom(roomName);
+                Console.WriteLine($"You have entered the {roomName}.");
+            }
+            else
+            {
+                Console.WriteLine($"The room '{roomName}' doesn't exist.");
+            }
+        }
+
+        // Method to show the strongest weapon in the player's inventory
+        private void ShowStrongestWeapon()
+        {
+            Weapon strongestWeapon = player.Inventory.GetStrongestWeapon();
+            if (strongestWeapon != null)
+            {
+                Console.WriteLine($"The strongest weapon in your inventory is: {strongestWeapon.Name} with damage {strongestWeapon.weaponDamage}");
+            }
+            else
+            {
+                Console.WriteLine("No weapons found in your inventory.");
+            }
+        }
+
+        // Method to show all healing items in the player's inventory
+        private void ShowAllPotions()
+        {
+            var potions = player.Inventory.GetAllPotions();
+            if (potions.Count > 0)
+            {
+                Console.WriteLine("Healing items in your inventory:");
+                foreach (var potion in potions)
+                {
+                    Console.WriteLine($"{potion.Name} - Restores {potion.HealingAmount} health.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No healing items found in your inventory.");
+            }
+        }
+
+        // Method to restart the game 
+        private void RestartGame()
+        {
+            Console.WriteLine("Do you want to restart the game? (yes/no)");
+            string choice = Console.ReadLine();
+            if (choice.ToLower() == "yes")
+            {
+                Game newGame = new Game(player.Name);
+                newGame.Start();
+            }
+            else
+            {
+                Console.WriteLine("Thank you for playing!");
+                Environment.Exit(0);
             }
         }
     }
